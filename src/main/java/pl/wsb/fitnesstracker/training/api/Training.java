@@ -1,11 +1,10 @@
 package pl.wsb.fitnesstracker.training.api;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 import pl.wsb.fitnesstracker.training.internal.ActivityType;
 import pl.wsb.fitnesstracker.user.api.User;
 
@@ -14,35 +13,32 @@ import java.util.Date;
 @Entity
 @Table(name = "trainings")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@Setter // Dodaj settery, żeby Hibernate mógł wypełniać dane
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA wymaga pustego konstruktora
 public class Training {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Nullable
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id") // Tworzy kolumnę z kluczem obcym
     private User user;
 
-    @Column(name = "start_time", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date endTime;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "activity_type", nullable = false)
+    @Enumerated(EnumType.STRING) // Przechowuje nazwę enuma jako tekst w bazie
     private ActivityType activityType;
 
-    @Column(nullable = false)
     private double distance;
 
-    @Column(name = "average_speed", nullable = false)
     private double averageSpeed;
 
+    // Twój istniejący konstruktor jest OK, zostanie obok NoArgsConstructor
     public Training(
             final User user,
             final Date startTime,
